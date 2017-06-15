@@ -12,6 +12,12 @@ using Newtonsoft.Json;
 
 namespace ChatServer
 {
+    class Message : IMessage
+    {
+        public string Text { get ; set; }
+        public MessageType Type { get; set; }
+        public string Receiver { get ; set; }
+    }
     class Program 
     {
         static Dictionary<TcpClient, String> Names = new Dictionary<TcpClient, string>();
@@ -69,15 +75,40 @@ namespace ChatServer
                          while (true)
                          {
                              var line = await reader.ReadLineAsync();
-                             /* IMessage msg = JsonConvert.DeserializeObject<IMessage>(line);
-                              if (msg.Type.Equals("Broadcast"))
-                              {
-                                  Broadcast(msg);
-                              }*/
-                             // decode (JSON)
-                             Broadcast(line);
-                         }
+                             IMessage msg = JsonConvert.DeserializeObject<Message>(line);
+                             if (msg.Type == MessageType.Broadcast)
+                             {
+                                 Broadcast(line);
+                             }
+                             else if (msg.Type == MessageType.Unicast)
+                             {
+                                 if (msg.Receiver != null)
+                                 {
+                                     var myClient = Names.FirstOrDefault(x => x.Value == msg.Receiver).Key;
+                                     if (myClient != null)
+                                     {
+                                         var writer = new StreamWriter(myClient.GetStream()) { AutoFlush = true };
+                                         {
+                                             writer.WriteLine(line);
+                                         }
+                                     }
 
+                                 }
+                                 else
+                                 {
+                                     var myClient = Names.FirstOrDefault(x => x.Value == msg.Receiver).Key;
+                                     var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+                                     {
+
+                                         // writer.WriteLine("Sorry your reciever doesn't exist");
+                                     }
+                                 }
+
+                                 // decode (JSON)
+                                // Broadcast(line);
+                             }
+
+                         }
                      });
                     t.Start();
 
