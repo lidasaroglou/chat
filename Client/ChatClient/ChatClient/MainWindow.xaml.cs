@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net.Sockets;
 using System.IO;
+using Newtonsoft.Json;
+using Contract;
 
 namespace ChatClient
 {
@@ -49,9 +51,9 @@ namespace ChatClient
                 while (true)
                 {
                     var reader = new StreamReader(stm);
-
                     var line = await reader.ReadLineAsync();
-                    output.Text += line;
+                    var msg = JsonConvert.DeserializeObject<JSONserialize>(line);
+                    output.Text += msg.Text+Environment.NewLine;
 
                 }
 
@@ -68,9 +70,31 @@ namespace ChatClient
 
             if (e.Key != Key.Return) return;
 
-            var writer = new StreamWriter(tcpClient.GetStream()) { AutoFlush = true };
+            String text = ((TextBox)sender).Text;
+
+            if (text[0]=='@')
+            {
+                int index = text.IndexOf(" ");
+                var username = text.Substring(1, index - 1);
+                var msg = new JSONserialize();
+                msg.Type = Contract.MessageType.Unicast;
+                msg.Text = text;
+                msg.Receiver = username;
+
+                var writer = new StreamWriter(tcpClient.GetStream()) { AutoFlush = true };
+                writer.WriteLine(JsonConvert.SerializeObject(msg));
+
+            } else
+            {
+                var msg = new JSONserialize();
+                msg.Type = Contract.MessageType.Broadcast;
+                msg.Text = text;
+
+                var writer = new StreamWriter(tcpClient.GetStream()) { AutoFlush = true };
+                writer.WriteLine(JsonConvert.SerializeObject(msg));
+            }
+
             
-            writer.WriteLine(((TextBox)sender).Text);
             
             //Message?.Invoke(this, ((TextBox)sender).Text);
             //((TextBox)sender).Text = "";
