@@ -10,13 +10,20 @@ namespace Contract
     {
         string Text { get; set; }
 
+        MessageType Type { get; set; }
 
-
+        string Receiver { get; set; }
     }
+
+    /*
+     * 
+     * { 'Text' : 'Geia', 'Type' : 'Broadcast' }
+     */
 
     public enum MessageType
     {
         Registration,
-        Message
+        Broadcast,
+        Unicast
     }
 }
