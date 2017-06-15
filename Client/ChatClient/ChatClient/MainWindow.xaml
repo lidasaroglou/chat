@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
+    
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition>
+                
+            </RowDefinition>
+            
+            <RowDefinition Height="auto">
+
+            </RowDefinition>
+            
+        </Grid.RowDefinitions>
+        <TextBlock Name="output">
+            
+        </TextBlock>
+
+        <TextBox Grid.Row="1" Height="55" PreviewKeyDown="TextBox_PreviewKeyDown">
+            
+        </TextBox>
     </Grid>
 </Window>

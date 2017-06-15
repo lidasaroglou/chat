@@ -93,5 +93,14 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Contract\Contract\Contract.csproj">
+      <Project>{078de91f-67ac-484e-9a51-966f8b623c92}</Project>
+      <Name>Contract</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
